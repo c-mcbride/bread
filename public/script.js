@@ -64,12 +64,20 @@ function addGroup(groupData = { name:'', rows: [] }){
     addRowButton.textContent = 'Add Category';
 
 
+    //Add add row button no matter what
     //addRowButton.textContent = 'Add Category';
     addRowButton.classList.add('add-row-button');
     addRowButton.addEventListener('click', () => {
         addRow(groupList);
     });
     groupHeader.appendChild(addRowButton);
+
+    //iterate through stored rows and add them to the element
+    for(const currentRow of rows){
+        //call row builder for current row
+        groupList.appendChild(createRow(currentRow));
+
+    }
 
     group.appendChild(groupHeader);
     group.appendChild(groupList);
@@ -96,7 +104,8 @@ function addRow(groupList){
   |                                      +--------------------------+ |
   +-------------------------------------------------------------------+
 */
-function createRow(){
+function createRow(rowData = { name: '' }){
+
     //Right side div: Create inner most value box 
     const rowAmountInput = createInput("rowAmount");
 
@@ -108,8 +117,12 @@ function createRow(){
     const rowName = document.createElement("div");
     rowName.classList.add("row-name");
 
-    //create a budget input textbox
-    rowName.appendChild(createInput("rowName"));
+    if(rowData.name.trim().length  === 0){
+        rowName.appendChild(createInput("rowName"));
+    }
+    else{
+        rowName.appendChild(createSpan(rowData.name, "rowName"));
+    }
 
     //Create list node and return the full line item
     const row = document.createElement("li");
