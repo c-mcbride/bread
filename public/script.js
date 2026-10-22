@@ -7,6 +7,18 @@ let rowThatWasRightClicked = null;
 //Grab a reference to the budget Category conatiner 
 const groups = document.querySelector('.groups');
 
+async function fetchGroups(){
+    const endpoint = '/api/groups';
+    const response = await fetch(endpoint);
+
+
+    const data = await response.json();
+    console.log(data);
+}
+
+fetchGroups();
+
+
 function addGroup(){
     console.log("add group running");
 
