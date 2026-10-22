@@ -76,7 +76,6 @@ function addGroup(groupData = { name:'', rows: [] }){
     for(const currentRow of rows){
         //call row builder for current row
         groupList.appendChild(createRow(currentRow));
-
     }
 
     group.appendChild(groupHeader);
@@ -104,14 +103,14 @@ function addRow(groupList){
   |                                      +--------------------------+ |
   +-------------------------------------------------------------------+
 */
-function createRow(rowData = { name: '' }){
+function createRow(rowData = { name: '', amount: 0 }){
 
     //Right side div: Create inner most value box 
-    const rowAmountInput = createInput("rowAmount");
+    const rowAmount = createAmountSpan(rowData.amount);
 
     const rowValues = document.createElement("div");
     rowValues.classList.add("row-values");
-    rowValues.appendChild(rowAmountInput);
+    rowValues.appendChild(rowAmount);
 
     //Left Side: Holds line item text
     const rowName = document.createElement("div");
@@ -185,6 +184,28 @@ function createSpan(text, textBoxType){
     addAbilityToChangeText(textNode, textBoxType);
 
     return textNode;
+}
+
+function createAmountSpan(cents){
+    const formattedDollars = (cents / 100).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
+
+    const amountNode = document.createElement('span');
+    amountNode.textContent = formattedDollars;
+
+    if(cents > 0){
+        amountNode.classList.add('is-positive');
+    }
+    else if(cents=== 0){
+        amountNode.classList.add('is-zero');
+    }
+    else{
+        amountNode.classList.add('is-negative');
+    }
+
+    return amountNode;
 }
 
 function updateMenuPosition(x,y){

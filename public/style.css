@@ -109,18 +109,20 @@ input:focus-visible{
 
 .is-positive { 
     color: var(--money-positive);
-    border: 1px solid var(--money-positive);
 }
 
 .is-zero{ 
     color: var(--money-zero); 
-    border: 1px solid var(--money-zero);
 }
 
 .is-negative { 
     color: var(--money-negative); 
-    border: 1px solid var(--money-negative); 
 }
+
+.inflow-square.is-positive { border-color: var(--money-positive); }
+.inflow-sqare.is-zero { border-color: var(--money-zero); }
+.inflow-square.is-negative {border-color: var(--money-negative); }
+
 
 .groups{
     display: flex;

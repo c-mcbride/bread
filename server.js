@@ -8,15 +8,15 @@ const groups = [
         id: 1,
         name: 'Fixed',
         rows: [
-            { id: 1, name: 'Rent'},
-            { id: 2, name: 'Electric'}
+            { id: 1, name: 'Rent', amount: 2500},
+            { id: 2, name: 'Electric', amount: 150}
         ]
     },
     {
         id: 2,
         name: 'Variable',
         rows: [
-            { id: 3, name: 'Dining out'}
+            { id: 3, name: 'Dining out', amount: -2000}
         ]
     }
 ];
