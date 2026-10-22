@@ -12,15 +12,23 @@ async function fetchGroups(){
     const response = await fetch(endpoint);
 
 
-    const data = await response.json();
-    console.log(data);
+    const fetchedGroups = await response.json();
+    
+    // loop over groups and call add groups for each group object in the group array
+    for(const group of fetchedGroups){
+       addGroup(group);
+    }
+
 }
 
 fetchGroups();
 
 
-function addGroup(){
+function addGroup(groupData = { name:'', rows: [] }){
     console.log("add group running");
+
+    const name= groupData.name;
+    const rows = groupData.rows;
 
     //CreateDiv to hold the entire category with a button and line items
     const group = document.createElement('div');
@@ -43,8 +51,14 @@ function addGroup(){
     */
     const groupHeader = document.createElement('div');
     groupHeader.classList.add('group-header');
-    //Add a textbox 
-    groupHeader.appendChild(createInput("groupName"));
+    
+    if(name.trim().length === 0){
+        groupHeader.appendChild(createInput("groupName"));
+    }
+    else{
+        groupHeader.appendChild(createSpan(name, "groupName"));
+    }
+    
     //Add the button
     const addRowButton = document.createElement('button');
     addRowButton.textContent = 'Add Category';
@@ -108,7 +122,7 @@ function createRow(){
     return row;
 }
 
-//Create a textbox for budget category, inserts its own class name
+//Create a textbox for row names amounts or names of groups
 function createInput(textBoxType){
     
     const textBox = document.createElement("input");
@@ -142,17 +156,22 @@ function createInput(textBoxType){
         if(!enteredText.trim()) return;
 
         //2.Create a new text element
-        const textNode = document.createElement('span');
-        textNode.textContent = enteredText;
-
-        //Add a listener to give user the ability to edit text again
-        addAbilityToChangeText(textNode, textBoxType);
-
-        //3. Swap the input box with the text node
+        const textNode = createSpan(enteredText, textBoxType);
         event.target.replaceWith(textNode);
     });
 
     return textBox;
+}
+
+//Enters a span with the param text, adds a listener that allows you to change it back into node
+function createSpan(text, textBoxType){
+    const textNode = document.createElement('span');
+    textNode.textContent = text;
+
+    //Add the lisner to give the user edit ability
+    addAbilityToChangeText(textNode, textBoxType);
+
+    return textNode;
 }
 
 function updateMenuPosition(x,y){

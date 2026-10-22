@@ -4,21 +4,21 @@ const app = express();
 app.use(express.static('public'));
 
 const groups = [
-    {
-        id: 1,
-        name: 'Fixed',
-        rows: [
-            { id: 1, name: 'Rent'},
-            { id: 2, name: 'Electric'}
-        ]
-    },
-    {
-        id: 2,
-        name: 'Variable',
-        rows: [
-            { id: 3, name: 'Dining out'}
-        ]
-    }
+    // {
+    //     id: 1,
+    //     name: 'Fixed',
+    //     rows: [
+    //         { id: 1, name: 'Rent'},
+    //         { id: 2, name: 'Electric'}
+    //     ]
+    // },
+    // {
+    //     id: 2,
+    //     name: 'Variable',
+    //     rows: [
+    //         { id: 3, name: 'Dining out'}
+    //     ]
+    // }
 ];
 
 app.get('/api/hello', (req, res) => {
