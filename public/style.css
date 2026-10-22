@@ -1,0 +1,202 @@
+:root{
+    --money-positive: #50FA7B;
+    --money-zero: #6272A4;
+    --money-negative: #FF5555;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Quicksand', sans-serif;
+}
+
+body{
+    background-color:#282A36;
+    color: #F8F8F2;
+    font-family: 'Quicksand', sans-serif;
+}
+
+h1{
+    margin: 0;
+}
+
+ul{
+    list-style-type: none;
+    padding: 0px;
+    background-color: #FFFFFF0D;
+    border-radius: 8px;
+    border: 1px solid #FFFFFF14;
+    color: white; 
+}
+
+input{
+    border: 1px solid #FFFFFF14;     /* Removes the default border */
+    outline: none;      /* Removes the active focus ring */
+    background: none;   /* Removes the default background color */
+    box-shadow: none; 
+    color: white;
+    border-radius: 6px;
+}
+
+button{
+    font: inherit;
+    font-weight: 600;
+    color: #E6E8F0; 
+    background-color: #BD93F91A;
+    border: 1px solid #FFFFFF14;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 6px; 
+    transition: background-color 150ms, border-color 150ms, transform 100ms, box-shadow 150ms;
+}
+
+button:hover{
+    border-color: #BD93F9;
+    background-color: #BD93F966;
+}
+
+button:focus-visible{
+    border-color: #BD93F9;
+    box-shadow: 0 0 0 3px #BD93F933;
+}
+
+button:active{
+    transform: translateY(1px);
+}
+
+input:hover{
+    border: 1px solid #FFFFFF2E; 
+}
+
+input:focus-visible{
+    border-color: #BD93F9;
+}
+
+.row-values{
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+}
+
+.header{
+    display: flex;
+    height: 5vh;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+}
+
+.page-main{
+    display: grid;
+    grid-template-columns: 6% 78% 16%;
+}
+
+.inflow-square-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.inflow-square{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 81px;
+    width: 241px;
+    background-color: #2F3140;
+    border-radius: 6px;
+    border: 1px solid #50FA7B33;
+}
+
+.is-positive { 
+    color: var(--money-positive);
+    border: 1px solid var(--money-positive);
+}
+
+.is-zero{ 
+    color: var(--money-zero); 
+    border: 1px solid var(--money-zero);
+}
+
+.is-negative { 
+    color: var(--money-negative); 
+    border: 1px solid var(--money-negative); 
+}
+
+.groups{
+    display: flex;
+    flex-direction: column;
+}
+
+.add-group-button{
+    align-self: flex-start;
+    margin-bottom: 10px;
+}
+
+.group-header{
+    display: flex;
+    gap: 10px;
+    background-color: #44475A;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #FFFFFF14;
+}
+
+.group-name-input{
+    font-weight: 600;
+}
+
+.group-list{
+    margin-top: 0px;
+}
+
+.group{
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+}
+
+.row{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #50FA7B;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    padding: 5px;
+}
+
+/*Don't know if this is used*/
+.button-and-input{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.context{
+    width: 200px;
+    margin: 0;
+    padding-left: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background: #F8F8F2;
+    color: black; 
+    position: fixed;
+    font-size: 16px;
+    visibility: hidden;
+}
+
+.context-link{
+    list-style-type: none;
+    padding: 0.75em 1em;
+    font-size: 0.85em;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+}
+
+.context-link:hover{
+    background: #eeeeee;
+}
