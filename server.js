@@ -3,6 +3,7 @@ const app = express();
 const db = require('/home/admin/bread-server/db.js');
 
 app.use(express.static('public'));
+app.use(express.json());
 
 // const groups = [
 //     {
@@ -63,13 +64,12 @@ app.get('/api/groups', (req, res) => {
                 rowObject.name = row.name;
 
                 rowObject.amount = row.amount;
-                console.log(rowObject);
+                //console.log(rowObject);
 
                 rowsDataStructure.push(rowObject);
             }
         }
 
-        console.log(rowsDataStructure);
         groupObject.rows = rowsDataStructure;
         groupsDataStructure.push(groupObject);
     }
@@ -78,6 +78,35 @@ app.get('/api/groups', (req, res) => {
     //console.log(groupsDataStructure);
     //console.log(rows);
     res.json(groupsDataStructure);
+});
+
+app.post('/api/groups', (req, res) => {
+    //destructure the JSON and pull out the name
+    let { name } = req.body || {}; //Use the left side if not empty, else use right
+
+    if((typeof name != "string")){
+         return res.status(400).json({
+            status: "error",
+            message: "Name Must be a String"
+        });
+    }
+
+    name = name.trim();
+
+    if(name.length === 0){
+        return res.status(400).json({
+            status: "error",
+            message: "Missing required field: name"
+        });
+    }
+
+    //Prepare the SQL and insert
+    const insertGroup = db.prepare('INSERT INTO groups (name) VALUES (?)');
+    const returnedDBObject = insertGroup.run(name);
+    const newRowId = Number(returnedDBObject.lastInsertRowid);
+
+    console.log('Inserted new row Id: ' + newRowId);
+    res.status(201).json({ id: newRowId, name: name, rows: [] });
 });
  
 app.listen(3000, () => {

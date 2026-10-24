@@ -24,6 +24,7 @@ async function fetchGroups(){
 fetchGroups();
 
 
+
 function addGroup(groupData = { name:'', rows: [] }){
     console.log("add group running");
 
