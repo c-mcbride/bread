@@ -18,6 +18,14 @@ const groups = [
         rows: [
             { id: 3, name: 'Dining out', amount: -2000}
         ]
+    },
+    {
+        id: 3,
+        name: 'Savings',
+        rows: [
+            { id: 4, name: 'ally', amount: 4500000}
+        ]
+
     }
 ];
 

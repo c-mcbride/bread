@@ -277,7 +277,3 @@ document.querySelector("#deleteLineItem").addEventListener("click", () => {
 document.addEventListener("click", () => {
     contextMenu.style.visibility = null;
 });
-
-
-
- 
