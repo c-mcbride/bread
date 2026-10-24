@@ -23,7 +23,27 @@ async function fetchGroups(){
 
 fetchGroups();
 
+async function postGroup(name){
+    try{
+        const response = await fetch('/api/groups', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name }),
+        });
 
+        if(!response.ok){
+            throw new Error(`HTTP error! Status: ${response.status}` );
+        }
+
+        const result = await response.json();
+        return result;
+    }catch(error){
+        console.error("Error during POST request: ", error);
+        throw error;
+    }
+}
 
 function addGroup(groupData = { name:'', rows: [] }){
     console.log("add group running");
@@ -159,7 +179,7 @@ function createInput(textBoxType){
         console.error("Invalid textBoxType")
     }
 
-    textBox.addEventListener('blur', (event) => {
+    textBox.addEventListener('blur', async (event) => {
         console.log('textBox event listner Running....')
 
         //1. Grab the entered value
@@ -170,7 +190,19 @@ function createInput(textBoxType){
 
         //2.Create a new text element
         const textNode = createSpan(enteredText, textBoxType);
-        event.target.replaceWith(textNode);
+        const targetNode = event.target;
+
+        const parentNode = targetNode.closest('.group');
+
+        //Commit to DB
+        if(textBoxType === "groupName"){
+            const result = await postGroup(enteredText);
+
+            //Put the returned id on the element
+            parentNode.dataset.id = result.id;
+        }
+
+        targetNode.replaceWith(textNode);
     });
 
     return textBox;
