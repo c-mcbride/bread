@@ -54,6 +54,11 @@ function addGroup(groupData = { name:'', rows: [] }){
     //CreateDiv to hold the entire category with a button and line items
     const group = document.createElement('div');
     group.classList.add('group');
+    
+    if(groupData.id !== undefined){
+        //Add div id from DB
+        group.dataset.id = groupData.id;
+    }
 
     //build ul list
     const groupList = document.createElement('ul');
@@ -196,15 +201,21 @@ function createInput(textBoxType){
 
         //Commit to DB
         if(textBoxType === "groupName"){
-            const result = await postGroup(enteredText);
-
-            //Put the returned id on the element
-            parentNode.dataset.id = result.id;
+            //Post new group if the parent group div doesn't have an id 
+            if(!parentNode.dataset.id){
+                const result = await postGroup(enteredText);
+                //Put the returned id on the element
+                parentNode.dataset.id = result.id;
+            }
         }
+
+        //TODO: This ignores an update, need to create a patch endpoint
 
         targetNode.replaceWith(textNode);
     });
 
+    //TODO: swap happens after the await (double blur risk)
+    //TODO: no error handling on failed POST
     return textBox;
 }
 
