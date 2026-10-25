@@ -84,7 +84,7 @@ app.post('/api/groups', (req, res) => {
     //destructure the JSON and pull out the name
     let { name } = req.body || {}; //Use the left side if not empty, else use right
 
-    if((typeof name != "string")){
+    if((typeof name !== "string")){
          return res.status(400).json({
             status: "error",
             message: "Name Must be a String"
@@ -108,7 +108,55 @@ app.post('/api/groups', (req, res) => {
     console.log('Inserted new row Id: ' + newRowId);
     res.status(201).json({ id: newRowId, name: name, rows: [] });
 });
+
+app.patch('/api/groups/:id', (req, res) => {
+    const groupId = Number(req.params.id);
+
+    if((!Number.isInteger(groupId))){
+        return res.status(400).json({
+            status: "error",
+            message: "id must be a number"
+        });
+    }
+
+    let { name } = req.body || {};
+
+    if(typeof name !== "string"){
+        return res.status(400).json({
+            status: "error",
+            message: "Name Must be a String"
+
+        });
+    }
+
+    name = name.trim();
+
+    if(name.length === 0){
+        return res.status(400).json({
+            status: "error",
+            message: "Missing required field: name"
+        });
+    }
+
+    const updateStatement = db.prepare('UPDATE groups SET name = ? WHERE id = ?');
+    const returnedDBObject = updateStatement.run(name, groupId);
+
+    if(returnedDBObject.changes === 0){
+        res.status(404).json({message: `No matching group found with id ${groupId}`});
+    }
+    else{
+        res.status(200).json({ id: groupId, name: name})
+    }
+
+    console.log("update successful updated group");
+});
  
+app.post('/api/groups/:id/rows', (req, res) => {
+    //deconstruct the JSON and put all the goup_id and name
+    
+});
+
+
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });

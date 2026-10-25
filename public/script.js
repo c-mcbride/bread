@@ -24,8 +24,7 @@ async function fetchGroups(){
 fetchGroups();
 
 async function postGroup(name){
-    try{
-        const response = await fetch('/api/groups', {
+    const response = await fetch('/api/groups', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,10 +38,6 @@ async function postGroup(name){
 
         const result = await response.json();
         return result;
-    }catch(error){
-        console.error("Error during POST request: ", error);
-        throw error;
-    }
 }
 
 function addGroup(groupData = { name:'', rows: [] }){
@@ -209,9 +204,11 @@ function createInput(textBoxType){
                     const result = await postGroup(enteredText);
                     //Put the returned id on the element
                     parentNode.dataset.id = result.id;
-                    console.error("Error during POST Request: ", error);
                 }catch(error) {
                     console.error("Error during POST Request: ", error);
+                    //TODO: ADD LOGIC FOR WHAT TO DO IN THE UI AND ON THE BE IF FAILS.
+                    //IDEA 1: add class is-saved to parentNode in the catch and style it (red outline)
+                    //IDEA 2: Revert to input, swap the spance back to an input holding text so user can try again
                 }
             }
         }
