@@ -112,12 +112,13 @@ app.post('/api/groups', (req, res) => {
 app.patch('/api/groups/:id', (req, res) => {
     const groupId = Number(req.params.id);
 
-    if((!Number.isInteger(groupId))){
+    if(!Number.isInteger(groupId) || groupId <= 0){
         return res.status(400).json({
             status: "error",
-            message: "id must be a number"
+            message: "id must be a number greater than zero"
         });
     }
+
 
     let { name } = req.body || {};
 
