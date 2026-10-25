@@ -188,30 +188,35 @@ function createInput(textBoxType){
         console.log('textBox event listner Running....')
 
         //1. Grab the entered value
-        const enteredText = event.target.value;
+        let enteredText = event.target.value;
+        enteredText = enteredText.trim();
 
         //if nothing is entered stop
-        if(!enteredText.trim()) return;
+        if(!enteredText) return;
 
         //2.Create a new text element
         const textNode = createSpan(enteredText, textBoxType);
         const targetNode = event.target;
 
         const parentNode = targetNode.closest('.group');
+        targetNode.replaceWith(textNode);
 
         //Commit to DB
         if(textBoxType === "groupName"){
             //Post new group if the parent group div doesn't have an id 
             if(!parentNode.dataset.id){
-                const result = await postGroup(enteredText);
-                //Put the returned id on the element
-                parentNode.dataset.id = result.id;
+                try{
+                    const result = await postGroup(enteredText);
+                    //Put the returned id on the element
+                    parentNode.dataset.id = result.id;
+                    console.error("Error during POST Request: ", error);
+                }catch(error) {
+                    console.error("Error during POST Request: ", error);
+                }
             }
         }
 
         //TODO: This ignores an update, need to create a patch endpoint
-
-        targetNode.replaceWith(textNode);
     });
 
     //TODO: swap happens after the await (double blur risk)
