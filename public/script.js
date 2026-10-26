@@ -40,6 +40,24 @@ async function postGroup(name){
         return result;
 }
 
+async function patchGroup(groupId, name){
+    //const url = `/api/groups/${groupId}`; 
+    const response = await fetch(`/api/groups/${groupId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({ name }),
+    });
+
+    if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}` );
+    }
+
+    const result = await response.json();
+    return result;
+}
+
 function addGroup(groupData = { name:'', rows: [] }){
     console.log("add group running");
 
@@ -207,8 +225,16 @@ function createInput(textBoxType){
                 }catch(error) {
                     console.error("Error during POST Request: ", error);
                     //TODO: ADD LOGIC FOR WHAT TO DO IN THE UI AND ON THE BE IF FAILS.
-                    //IDEA 1: add class is-saved to parentNode in the catch and style it (red outline)
+                    //IDEA 1: add class is-unsaved to parentNode in the catch and style it (red outline)
                     //IDEA 2: Revert to input, swap the spance back to an input holding text so user can try again
+                }
+            }
+            else{
+                try{
+                    const result = await patchGroup(parentNode.dataset.id, enteredText);
+                }catch(error){
+                    console.log(parentNode.dataset.id, enteredText);
+                    console.error("Error during PATCH Requst: ", error);
                 }
             }
         }
