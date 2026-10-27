@@ -113,32 +113,20 @@ app.patch('/api/groups/:id', (req, res) => {
 
 
     let { name } = req.body || {};
+    const result = nameValidator(name);
 
-    if(typeof name !== "string"){
-        return res.status(400).json({
-            status: "error",
-            message: "Name Must be a String"
-
-        });
-    }
-
-    name = name.trim();
-
-    if(name.length === 0){
-        return res.status(400).json({
-            status: "error",
-            message: "Missing required field: name"
-        });
+    if(result.error){
+        return res.status(400).json({status: "error", message: result.error});
     }
 
     const updateStatement = db.prepare('UPDATE groups SET name = ? WHERE id = ?');
-    const returnedDBObject = updateStatement.run(name, groupId);
+    const returnedDBObject = updateStatement.run(result.name, groupId);
 
     if(returnedDBObject.changes === 0){
         res.status(404).json({message: `No matching group found with id ${groupId}`});
     }
     else{
-        res.status(200).json({ id: groupId, name: name})
+        res.status(200).json({ id: groupId, name: result.name});
     }
 
     console.log("update successful updated group");
