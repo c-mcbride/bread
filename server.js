@@ -153,8 +153,42 @@ app.patch('/api/groups/:id', (req, res) => {
 });
  
 app.post('/api/groups/:id/rows', (req, res) => {
-    //deconstruct the JSON and put all the goup_id and name
-    
+    //deconstruct the JSON and put out the goup_id and name
+    const groupId = Number(req.params.id);
+
+    if(!Number.isInteger(groupId) || groupId <= 0){
+        return res.status(400).json({
+            status: "error",
+            message: "id must be a number greater than zero"
+        });
+    }
+
+    let { name } = req.body || {};
+
+    if(typeof name !== "string"){
+        return res.status(400).json({
+            status: "error",
+            message: "Name Must be a String"
+
+        });
+    }
+
+    name = name.trim();
+
+    if(name.length === 0){
+        return res.status(400).json({
+            status: "error",
+            message: "Missing required field: name"
+        });
+    }
+
+    const updateStatement = db.prepare('INSERT Into rows (name, group_id) VALUES (?,?) ');
+    const returnedDBObject = updateStatement.run(name, groupId);
+
+    const newRowId = Number(returnedDBObject.lastInsertRowid);
+
+    console.log('Inserted new row Id: ' + newRowId);
+    res.status(201).json({ id: newRowId, name: name });
 });
 
 
