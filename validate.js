@@ -12,4 +12,13 @@ function nameValidator(name){
     return { name };
 }
 
-module.exports = { nameValidator };
+function groupIdValidator(groupId){
+    
+    if(!Number.isInteger(groupId) || groupId <= 0){
+        return { error: 'id must be a number greater than zero'};
+    }
+
+    return { groupId };
+}
+
+module.exports = { nameValidator, groupIdValidator };

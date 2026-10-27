@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('/home/admin/bread-server/db.js');
-const { nameValidator } = require('./validate');
+const { nameValidator, groupIdValidator } = require('./validate');
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -86,89 +86,75 @@ app.post('/api/groups', (req, res) => {
     let { name } = req.body || {}; //Use the left side if not empty, else use right
 
     //Returns object either { result : 'message'} or { name: 'name' }
-    const result = nameValidator(name);
+    const nameResult = nameValidator(name);
 
-    if(result.error){
-        return res.status(400).json({status: "error", message: result.error});
+    if(nameResult.error){
+        return res.status(400).json({status: "error", message: nameResult.error});
     }
   
     //Prepare the SQL and insert
     const insertGroup = db.prepare('INSERT INTO groups (name) VALUES (?)');
-    const returnedDBObject = insertGroup.run(result.name);
+    const returnedDBObject = insertGroup.run(nameResult.name);
     const newRowId = Number(returnedDBObject.lastInsertRowid);
 
     console.log('Inserted new row Id: ' + newRowId);
-    res.status(201).json({ id: newRowId, name: result, rows: [] });
+    res.status(201).json({ id: newRowId, name: nameResult, rows: [] });
 });
 
 app.patch('/api/groups/:id', (req, res) => {
     const groupId = Number(req.params.id);
 
-    if(!Number.isInteger(groupId) || groupId <= 0){
-        return res.status(400).json({
-            status: "error",
-            message: "id must be a number greater than zero"
-        });
+    const groupIdResult = groupIdValidator(groupId);
+
+    if(groupIdResult.error){
+        return res.status(400).json({status: "error", message: groupIdResult.error});
     }
 
-
+   
     let { name } = req.body || {};
-    const result = nameValidator(name);
+    const nameResult = nameValidator(name);
 
-    if(result.error){
-        return res.status(400).json({status: "error", message: result.error});
+    if(nameResult.error){
+        return res.status(400).json({status: "error", message: nameResult.error});
     }
 
     const updateStatement = db.prepare('UPDATE groups SET name = ? WHERE id = ?');
-    const returnedDBObject = updateStatement.run(result.name, groupId);
+    const returnedDBObject = updateStatement.run(nameResult.name, groupIdResult.groupId);
 
     if(returnedDBObject.changes === 0){
-        res.status(404).json({message: `No matching group found with id ${groupId}`});
+        res.status(404).json({message: `No matching group found with id ${groupIdResult.groupId}`});
     }
     else{
-        res.status(200).json({ id: groupId, name: result.name});
+        res.status(200).json({ id: groupIdResult.groupId, name: nameResult.name});
+        console.log("update successful updated group");
     }
-
-    console.log("update successful updated group");
 });
  
 app.post('/api/groups/:id/rows', (req, res) => {
     //deconstruct the JSON and put out the goup_id and name
     const groupId = Number(req.params.id);
 
-    if(!Number.isInteger(groupId) || groupId <= 0){
-        return res.status(400).json({
-            status: "error",
-            message: "id must be a number greater than zero"
-        });
+    const groupIdResult = groupIdValidator(groupId);
+
+    if(groupIdResult.error){
+        return res.status(400).json({status: "error", message: groupIdResult.error});
     }
 
     let { name } = req.body || {};
 
-    if(typeof name !== "string"){
-        return res.status(400).json({
-            status: "error",
-            message: "Name Must be a String"
+    const nameResult = nameValidator(name);
 
-        });
-    }
-
-    name = name.trim();
-
-    if(name.length === 0){
-        return res.status(400).json({
-            status: "error",
-            message: "Missing required field: name"
-        });
+    if(nameResult.error){
+        return res.status(400).json({status: "error", message: nameResult.error});
     }
 
     const updateStatement = db.prepare('INSERT Into rows (name, group_id) VALUES (?,?) ');
-    const returnedDBObject = updateStatement.run(name, groupId);
+    const returnedDBObject = updateStatement.run(nameResult.name, groupIdResult.groupId);
 
     const newRowId = Number(returnedDBObject.lastInsertRowid);
 
     console.log('Inserted new row Id: ' + newRowId);
-    res.status(201).json({ id: newRowId, name: name });
+    res.status(201).json({ id: newRowId, name: nameResult.name });
 });
 
 
