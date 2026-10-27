@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('/home/admin/bread-server/db.js');
+const { nameValidator } = require('./validate');
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -84,29 +85,20 @@ app.post('/api/groups', (req, res) => {
     //destructure the JSON and pull out the name
     let { name } = req.body || {}; //Use the left side if not empty, else use right
 
-    if((typeof name !== "string")){
-         return res.status(400).json({
-            status: "error",
-            message: "Name Must be a String"
-        });
+    //Returns object either { result : 'message'} or { name: 'name' }
+    const result = nameValidator(name);
+
+    if(result.error){
+        return res.status(400).json({status: "error", message: result.error});
     }
-
-    name = name.trim();
-
-    if(name.length === 0){
-        return res.status(400).json({
-            status: "error",
-            message: "Missing required field: name"
-        });
-    }
-
+  
     //Prepare the SQL and insert
     const insertGroup = db.prepare('INSERT INTO groups (name) VALUES (?)');
-    const returnedDBObject = insertGroup.run(name);
+    const returnedDBObject = insertGroup.run(result.name);
     const newRowId = Number(returnedDBObject.lastInsertRowid);
 
     console.log('Inserted new row Id: ' + newRowId);
-    res.status(201).json({ id: newRowId, name: name, rows: [] });
+    res.status(201).json({ id: newRowId, name: result, rows: [] });
 });
 
 app.patch('/api/groups/:id', (req, res) => {
