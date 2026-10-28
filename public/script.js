@@ -10,15 +10,12 @@ const groups = document.querySelector('.groups');
 async function fetchGroups(){
     const endpoint = '/api/groups';
     const response = await fetch(endpoint);
-
-
     const fetchedGroups = await response.json();
     
     // loop over groups and call add groups for each group object in the group array
     for(const group of fetchedGroups){
        addGroup(group);
     }
-
 }
 
 fetchGroups();
@@ -124,7 +121,7 @@ function addGroup(groupData = { name:'', rows: [] }){
     //addRowButton.textContent = 'Add Category';
     addRowButton.classList.add('add-row-button');
     addRowButton.addEventListener('click', () => {
-        addRow(groupList);
+        addRow(groupList, group.dataset.id);
     });
     groupHeader.appendChild(addRowButton);
 
@@ -140,8 +137,9 @@ function addGroup(groupData = { name:'', rows: [] }){
 }
 
 //Adds the line item, called from addBudgetCategoryGroup functionwhen the Add Category Button is Clicked 
-function addRow(groupList){
+function addRow(groupList, groupId){
     console.log("addRow is running");
+    
     groupList.appendChild(createRow());
 }
 
@@ -256,7 +254,13 @@ function createInput(textBoxType){
             }
         }
 
-        //TODO: This ignores an update, need to create a patch endpoint
+        if(textBoxType === "rowName"){
+            try{
+                const result = await postRow(parentNode.dataset.id, enteredText);
+            }catch(error){
+                console.error("error during POST Request: ", error);
+            }
+        }
     });
 
     //TODO: swap happens after the await (double blur risk)
