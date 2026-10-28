@@ -127,8 +127,10 @@ function addGroup(groupData = { name:'', rows: [] }){
 
     //iterate through stored rows and add them to the element
     for(const currentRow of rows){
+        let rowToAdd = createRow(currentRow);
+        //rowToAdd.dataset.id = currentRow.id
         //call row builder for current row
-        groupList.appendChild(createRow(currentRow));
+        groupList.appendChild(rowToAdd);
     }
 
     group.appendChild(groupHeader);
@@ -139,7 +141,6 @@ function addGroup(groupData = { name:'', rows: [] }){
 //Adds the line item, called from addBudgetCategoryGroup functionwhen the Add Category Button is Clicked 
 function addRow(groupList, groupId){
     console.log("addRow is running");
-    
     groupList.appendChild(createRow());
 }
 
@@ -179,6 +180,11 @@ function createRow(rowData = { name: '', amount: 0 }){
 
     //Create list node and return the full line item
     const row = document.createElement("li");
+
+    if(rowData.id !== undefined){
+        row.dataset.id = rowData.id;
+    }
+
     row.classList.add("row")
     row.appendChild(rowName);
     row.appendChild(rowValues);
