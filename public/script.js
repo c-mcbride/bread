@@ -121,7 +121,7 @@ function addGroup(groupData = { name:'', rows: [] }){
     //addRowButton.textContent = 'Add Category';
     addRowButton.classList.add('add-row-button');
     addRowButton.addEventListener('click', () => {
-        addRow(groupList, group.dataset.id);
+        addRow(groupList);
     });
     groupHeader.appendChild(addRowButton);
 
@@ -139,7 +139,7 @@ function addGroup(groupData = { name:'', rows: [] }){
 }
 
 //Adds the line item, called from addBudgetCategoryGroup functionwhen the Add Category Button is Clicked 
-function addRow(groupList, groupId){
+function addRow(groupList){
     console.log("addRow is running");
     groupList.appendChild(createRow());
 }
@@ -232,46 +232,54 @@ function createInput(textBoxType){
         const textNode = createSpan(enteredText, textBoxType);
         const targetNode = event.target;
 
-        const parentNode = targetNode.closest('.group');
+        const groupNode = targetNode.closest('.group');
         targetNode.replaceWith(textNode);
 
         //Commit to DB
         if(textBoxType === "groupName"){
-            //Post new group if the parent group div doesn't have an id 
-            if(!parentNode.dataset.id){
-                try{
-                    const result = await postGroup(enteredText);
-                    //Put the returned id on the element
-                    parentNode.dataset.id = result.id;
-                }catch(error) {
-                    console.error("Error during POST Request: ", error);
-                    //TODO: ADD LOGIC FOR WHAT TO DO IN THE UI AND ON THE BE IF FAILS.
-                    //IDEA 1: add class is-unsaved to parentNode in the catch and style it (red outline)
-                    //IDEA 2: Revert to input, swap the spance back to an input holding text so user can try again
-                }
-            }
-            else{
-                try{
-                    const result = await patchGroup(parentNode.dataset.id, enteredText);
-                }catch(error){
-                    console.log(parentNode.dataset.id, enteredText);
-                    console.error("Error during PATCH Request: ", error);
-                }
-            }
+            saveGroupName(groupNode, enteredText);
         }
 
         if(textBoxType === "rowName"){
-            try{
-                const result = await postRow(parentNode.dataset.id, enteredText);
-            }catch(error){
-                console.error("error during POST Request: ", error);
-            }
+            const listNode = textNode.closest('.row');
+            saveRowName(groupNode, listNode, enteredText);
         }
     });
 
     //TODO: swap happens after the await (double blur risk)
     //TODO: no error handling on failed POST
     return textBox;
+}
+
+async function saveGroupName(groupNode,text){
+
+    if(!groupNode.dataset.id){
+        try{
+            const result = await postGroup(text);
+            groupNode.dataset.id = result.id;
+        }catch(error){
+            console.error("Error posting group to DB: ", error);
+        }
+    }
+    else{
+        try{
+            const result = await patchGroup(groupNode.dataset.id, text);
+        }catch(error){
+            console.log(groupNode.dataset.id, text);
+            console.error("Error during PATCH Request: ", error);
+        }
+    }
+}
+
+async function saveRowName(groupNode, rowNode, text){
+    if(!rowNode.dataset.id){
+        try{
+            const result = await postRow(groupNode.dataset.id, text);
+            rowNode.dataset.id = result.id
+        }catch(error){
+            console.log("error during POST Request when saving Row name: ", error);
+        }
+    }
 }
 
 //Enters a span with the param text, adds a listener that allows you to change it back into node
