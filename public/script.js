@@ -252,7 +252,6 @@ function createInput(textBoxType){
 }
 
 async function saveGroupName(groupNode,text){
-
     if(!groupNode.dataset.id){
         try{
             const result = await postGroup(text);
@@ -280,6 +279,8 @@ async function saveRowName(groupNode, rowNode, text){
             console.log("error during POST Request when saving Row name: ", error);
         }
     }
+
+    //TODO ADD PATCH
 }
 
 //Enters a span with the param text, adds a listener that allows you to change it back into node

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('/home/admin/bread-server/db.js');
-const { nameValidator, groupIdValidator } = require('./validate');
+const { nameValidator, groupIdValidator, amountValidator } = require('./validate');
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -155,6 +155,48 @@ app.post('/api/groups/:id/rows', (req, res) => {
 
     console.log('Inserted new row Id: ' + newRowId);
     res.status(201).json({ id: newRowId, name: nameResult.name });
+});
+
+app.patch('/api/rows/:id', (req, res) => {
+    const rowId = Number(req.params.id);
+    const rowIdResult = groupIdValidator(rowId);
+
+    if(rowIdResult.error){
+        return res.status(400).json({status: "error", message: rowIdResult.error});
+    }
+
+    let { name, amount } = req.body || {};
+    let nameToSave = null;
+    let amountToSave = null;
+
+    if(name === undefined && amount === undefined){
+        return res.status(400).json({status: "error", message: 'Row name and row value cant both be null'});
+    }
+
+    if(name !== undefined){
+        const nameResult = nameValidator(name);
+        if(nameResult.error){
+            return res.status(400).json({status: "error", message: nameResult.error});
+        }
+
+        nameToSave = nameResult.name;
+    }
+
+    if(amount !== undefined){
+        const amountResult = amountValidator(amount);
+        if(amountResult.error){
+            return res.status(400).json({status: "error", message: amountResult.error});
+        }
+
+        amountToSave = amountResult.amount;
+    }
+
+    const updateStatement = db.prepare('UPDATE rows SET name = COALESCE(?, name), amount = COALESCE(?, amount) WHERE id = ?');
+    const returnedDBObject = updateStatement.run(nameToSave, amountToSave, rowId);
+
+    //TODO: UPDATE RES
+    res.status(200).json({ });
+    console.log("update successful updated row");
 });
 
 

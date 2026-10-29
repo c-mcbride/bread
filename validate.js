@@ -21,4 +21,12 @@ function groupIdValidator(groupId){
     return { groupId };
 }
 
-module.exports = { nameValidator, groupIdValidator };
+function amountValidator(amount){
+    if(!Number.isInteger(amount)){
+        return { error: 'amount has to be an integer'};
+    }
+
+    return { amount };
+}
+
+module.exports = { nameValidator, groupIdValidator, amountValidator };
