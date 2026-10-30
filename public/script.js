@@ -72,6 +72,24 @@ async function postRow(groupId, name){
     return result;
 }
 
+async function patchRow(rowId, name, amount){
+    // build response object
+    const response = await fetch(`api/rows/${rowId}`, {
+        method: `PATCH`,
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({ name, amount }),
+    });
+
+    if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result; 
+}
+
 function addGroup(groupData = { name:'', rows: [] }){
     console.log("add group running");
 
