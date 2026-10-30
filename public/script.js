@@ -72,14 +72,17 @@ async function postRow(groupId, name){
     return result;
 }
 
-async function patchRow(rowId, name, amount){
-    // build response object
-    const response = await fetch(`api/rows/${rowId}`, {
-        method: `PATCH`,
+async function patchRow(rowId, fields){
+    
+
+    const response = await fetch(`/api/rows/${rowId}`, {
+        method: 'PATCH',
         headers: {
             'Content-Type' : 'application/json'
         },
-        body: JSON.stringify({ name, amount }),
+        //Call with patchRow(7, { amount: 1250 }) or patchRow(7, { name: 'Rent' }) or patchRow(7, { name: 'Rent', amount: 1250})
+        body: JSON.stringify(fields), 
+        //console.log("Fields ", fields);
     });
 
     if(!response.ok){
@@ -295,6 +298,18 @@ async function saveRowName(groupNode, rowNode, text){
             rowNode.dataset.id = result.id
         }catch(error){
             console.log("error during POST Request when saving Row name: ", error);
+        }
+    }
+    else{
+        try{
+            /**
+             * This does not allow you to patch in a new row amount
+             * currently there is no programmatic way to se row amount
+             * Later, row amount will be patched via moving money ONLY 
+             */
+            const result = await patchRow(rowNode.dataset.id, { name: text });
+        }catch(error){
+            console.log("error during PATCH request when patching Row name: ", error);
         }
     }
 
