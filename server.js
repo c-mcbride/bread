@@ -199,6 +199,22 @@ app.patch('/api/rows/:id', (req, res) => {
     console.log("update successful updated row");
 });
 
+app.delete('/api/rows/:id', (req, res) => {
+    const rowId = Number(req.params.id);
+    const rowIdResult = groupIdValidator(rowId);
+
+    if(rowIdResult.error){
+        return res.status(400).json({status: "error", message: rowIdResult.error});
+    }
+
+    const deleteStatement = db.prepare('DELETE FROM rows WHERE id = ?');
+    const returnDBObject = deleteStatement.run(rowId);
+
+    //TODO: UPDATE res
+    res.status(200).json({ });
+    console.log("Deleted row");
+});
+
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');
