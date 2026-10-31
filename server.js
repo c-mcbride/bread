@@ -211,8 +211,7 @@ app.delete('/api/rows/:id', (req, res) => {
     const returnDBObject = deleteStatement.run(rowId);
 
     //TODO: UPDATE res
-    res.status(200).json({ });
-    console.log("Deleted row");
+    res.status(204).end();
 });
 
 

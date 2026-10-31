@@ -73,8 +73,6 @@ async function postRow(groupId, name){
 }
 
 async function patchRow(rowId, fields){
-    
-
     const response = await fetch(`/api/rows/${rowId}`, {
         method: 'PATCH',
         headers: {
@@ -91,6 +89,14 @@ async function patchRow(rowId, fields){
 
     const result = await response.json();
     return result; 
+}
+
+async function deleteRow(rowId){
+    const response = await fetch(`/api/rows/${rowId}`, { method: 'DELETE'});
+
+    if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 }
 
 function addGroup(groupData = { name:'', rows: [] }){
@@ -410,6 +416,9 @@ function addAbilityToChangeText(textNode, textBoxType){
 
 document.querySelector("#deleteLineItem").addEventListener("click", () => {
     console.log("You clicked the delete line item button");
+    const listNode = rowThatWasRightClicked.dataset.id;
+
+    deleteRow(listNode); //Delete from DB
     rowThatWasRightClicked.remove();
     rowThatWasRightClicked = null;
 });
