@@ -222,6 +222,25 @@ app.get('/api/accounts', (req, res) => {
     res.json(accounts);
 });
 
+app.post('/api/accounts', (req, res) => {
+    //Destructure the JSON and pull out the name 
+    let { name } = req.body || {};
+
+    const nameResult = nameValidator(name);
+
+    if(nameResult.error){
+        return res.status(400).json({status: "error", message: nameResult.error});
+    }
+    
+    //Prepare teh SQL statement and insert it 
+    const insertAccount = db.prepare('INSERT INTO accounts (name) VALUES (?)');
+    const returnedDBObject = insertAccount.run(nameResult.name);
+    const newAccountId = Number(returnedDBObject.lastInsertRowid);
+
+    console.log('Inserted new account Id: ' + newAccountId);
+    res.status(201).json( {id: newAccountId, name: nameResult.name} );
+});
+
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
