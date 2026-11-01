@@ -214,6 +214,13 @@ app.delete('/api/rows/:id', (req, res) => {
     res.status(204).end();
 });
 
+app.get('/api/accounts', (req, res) => {
+    //Generate query to pull all accounts and put them into an array
+    const query = 'SELECT accounts.id, accounts.name FROM accounts ORDER BY accounts.id';
+
+    const accounts = db.prepare(query).all();
+    res.json(accounts);
+});
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

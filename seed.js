@@ -12,3 +12,6 @@ insertRows.run(1, 'Electric', 150);
 insertRows.run(2, 'Dining out', -2000);
 
 insertRows.run(3, 'ally', 4500000);
+
+const insertAccounts = db.prepare('INSERT INTO accounts (name) VALUES(?)');
+insertAccounts.run('Ally Checking');
