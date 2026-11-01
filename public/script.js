@@ -1,4 +1,4 @@
-import { fetchGroups, postGroup, patchGroup, postRow } from '/api.js';
+import { fetchGroups, postGroup, patchGroup, postRow, patchRow, deleteRow } from '/api.js';
 
 //Grab a reference to the context menu 
 const contextMenu = document.querySelector(".context");
@@ -32,39 +32,15 @@ document.querySelector('#addGroupButton').addEventListener('click', () => addGro
 const groups = document.querySelector('.groups');
 
 
-//Grab all the groups from DB and load them in on page load
-const fetchedGroups  = await fetchGroups();
-console.log(fetchedGroups);
-for(const group of fetchedGroups){
-    addGroup(group);
-}
 
-async function patchRow(rowId, fields){
-    const response = await fetch(`/api/rows/${rowId}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type' : 'application/json'
-        },
-        //Call with patchRow(7, { amount: 1250 }) or patchRow(7, { name: 'Rent' }) or patchRow(7, { name: 'Rent', amount: 1250})
-        body: JSON.stringify(fields), 
-        //console.log("Fields ", fields);
-    });
-
-    if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    return result; 
-}
-
-async function deleteRow(rowId){
-    const response = await fetch(`/api/rows/${rowId}`, { method: 'DELETE'});
-
-    if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}`);
+async function initializeApp(){
+    const fetchedGroups  = await fetchGroups();
+    for(const group of fetchedGroups){
+        addGroup(group);
     }
 }
+
+initializeApp();
 
 function addGroup(groupData = { name:'', rows: [] }){
     console.log("add group running");
