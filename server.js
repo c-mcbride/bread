@@ -98,7 +98,7 @@ app.post('/api/groups', (req, res) => {
     const newRowId = Number(returnedDBObject.lastInsertRowid);
 
     console.log('Inserted new row Id: ' + newRowId);
-    res.status(201).json({ id: newRowId, name: nameResult, rows: [] });
+    res.status(201).json({ id: newRowId, name: nameResult.name, rows: [] });
 });
 
 app.patch('/api/groups/:id', (req, res) => {

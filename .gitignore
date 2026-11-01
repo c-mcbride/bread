@@ -2,8 +2,6 @@ node_modules
 *.db
 
 todo
-put repeated code into functions in server.js
-
 connect add row to fe
 
 add ability to edit row in server.js and script.js

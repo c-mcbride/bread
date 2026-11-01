@@ -1,75 +1,42 @@
+import { fetchGroups, postGroup, patchGroup, postRow } from '/api.js';
+
 //Grab a reference to the context menu 
 const contextMenu = document.querySelector(".context");
 
 //Used for deletes later
 let rowThatWasRightClicked = null;
 
+/**
+ * After changing script.js to a module to pull in other classes, add group is no longer global
+ * Here we add the event listener, and pass in addGroup with no params because otherwise JS passes in the 
+ * Click event which is technically not null, addGroup accepts it but it doesn't work properly
+ * 
+ * addEventListener('click', addGroup) calls addGroup(theClickEvent)
+ * addGroup(gropuData = { name: '', row:[] }) default only kicks in when the argument is undefined
+ * Here the argument is the click event, groupData is the event
+ * groupData.name is undefined (events have no name)
+ * groupData.rows is undefined 
+ * name.trim() throws
+ * 
+ * button.addEventListener('click', () => addGroup());
+ * now the browser calls the arrow function and hands the event to it
+ * The arrow function ignores that event. calls addGroup with nothing
+ * 
+ * function handleAddGroupClick(){
+ *      addGroup();
+ * }
+ */
+document.querySelector('#addGroupButton').addEventListener('click', () => addGroup());
+
 //Grab a reference to the budget Category conatiner 
 const groups = document.querySelector('.groups');
 
-async function fetchGroups(){
-    const endpoint = '/api/groups';
-    const response = await fetch(endpoint);
-    const fetchedGroups = await response.json();
-    
-    // loop over groups and call add groups for each group object in the group array
-    for(const group of fetchedGroups){
-       addGroup(group);
-    }
-}
 
-fetchGroups();
-
-async function postGroup(name){
-    const response = await fetch('/api/groups', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name }),
-        });
-
-        if(!response.ok){
-            throw new Error(`HTTP error! Status: ${response.status}` );
-        }
-
-        const result = await response.json();
-        return result;
-}
-
-async function patchGroup(groupId, name){
-    //const url = `/api/groups/${groupId}`; 
-    const response = await fetch(`/api/groups/${groupId}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify({ name }),
-    });
-
-    if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}` );
-    }
-
-    const result = await response.json();
-    return result;
-}
-
-async function postRow(groupId, name){
-    const response = await fetch(`/api/groups/${groupId}/rows`, {
-        method: `POST`,
-        headers: {
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify({ name }),
-    });
-
-    if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    return result;
+//Grab all the groups from DB and load them in on page load
+const fetchedGroups  = await fetchGroups();
+console.log(fetchedGroups);
+for(const group of fetchedGroups){
+    addGroup(group);
 }
 
 async function patchRow(rowId, fields){
