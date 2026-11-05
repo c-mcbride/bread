@@ -93,6 +93,28 @@ export async function fetchAccounts(){
     const endpoint = '/api/accounts';
     const response = await fetch(endpoint);
 
+    if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
     const fetchedAccounts = await response.json();
     return fetchedAccounts;
+}
+
+//TODO ADD AMOUNT 
+export async function postAccount(name){
+    const response = await fetch('/api/accounts', {
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({ name }),
+    });
+
+    if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}` );
+    }
+
+    const result = await response.json();
+    return result;
 }

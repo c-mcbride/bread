@@ -222,6 +222,7 @@ app.get('/api/accounts', (req, res) => {
     res.json(accounts);
 });
 
+//TODO: Add balance value
 app.post('/api/accounts', (req, res) => {
     //Destructure the JSON and pull out the name 
     let { name } = req.body || {};
