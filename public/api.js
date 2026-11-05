@@ -88,3 +88,11 @@ export async function deleteRow(rowId){
         throw new Error(`HTTP error! Status: ${response.status}`);
     }
 }
+
+export async function fetchAccounts(){
+    const endpoint = '/api/accounts';
+    const response = await fetch(endpoint);
+
+    const fetchedAccounts = await response.json();
+    return fetchedAccounts;
+}

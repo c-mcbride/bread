@@ -1,4 +1,4 @@
-import { fetchGroups, postGroup, patchGroup, postRow, patchRow, deleteRow } from '/api.js';
+import { fetchGroups, postGroup, patchGroup, postRow, patchRow, deleteRow, fetchAccounts } from '/api.js';
 
 //Grab a reference to the context menu 
 const contextMenu = document.querySelector(".context");
@@ -31,13 +31,17 @@ document.querySelector('#addGroupButton').addEventListener('click', () => addGro
 //Grab a reference to the budget Category conatiner 
 const groups = document.querySelector('.groups');
 
-
-
 async function initializeApp(){
     const fetchedGroups  = await fetchGroups();
     for(const group of fetchedGroups){
         addGroup(group);
     }
+}
+
+//Grab all accounts at the start to load in sidebar
+const fetchedAccounts = await fetchAccounts();
+for(const account of fetchedAccounts){
+    console.log("Account Name: " + account.name);
 }
 
 initializeApp();
