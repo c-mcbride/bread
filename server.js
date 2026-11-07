@@ -216,13 +216,16 @@ app.delete('/api/rows/:id', (req, res) => {
 
 app.get('/api/accounts', (req, res) => {
     //Generate query to pull all accounts and put them into an array
-    const query = 'SELECT accounts.id, accounts.name FROM accounts ORDER BY accounts.id';
+    const query = 'SELECT accounts.id, accounts.name, accounts.amount FROM accounts ORDER BY accounts.id';
 
     const accounts = db.prepare(query).all();
     res.json(accounts);
 });
 
-//TODO: Add balance value
+/**
+ * Posting a new account only allows you to send a name
+ * If the need arises to also have an intial amount, this will have to be refactored. 
+ */
 app.post('/api/accounts', (req, res) => {
     //Destructure the JSON and pull out the name 
     let { name } = req.body || {};

@@ -1,5 +1,7 @@
 import { fetchGroups, postGroup, patchGroup, postRow, patchRow, deleteRow, fetchAccounts, postAccount } from '/api.js';
-window.api = { postAccount }; ///Debugging hook to make this available in console. Remove after dev
+
+//Debugging hook to make this available in console. Remove after dev. To invoke await api.postAccount("Name")
+window.api = { postAccount }; 
 
 //Grab a reference to the context menu 
 const contextMenu = document.querySelector(".context");
