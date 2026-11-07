@@ -245,6 +245,49 @@ app.post('/api/accounts', (req, res) => {
     res.status(201).json( {id: newAccountId, name: nameResult.name} );
 });
 
+//Patch account, can patch the name, amount or both...not neither 
+app.patch('/api/accounts/:id', (req,res) => {
+    const accountId = Number(req.params.id);
+    const accountIdResult = groupIdValidator(accountId);
+
+    if(accountIdResult.error){
+        return res.status(400).json({status: "error", message: accountIdResult.error});
+    }
+
+    let { name, amount } = req.body || {};
+    let nameToSave = null;
+    let amountToSave = null;
+
+    if(name === undefined && amount === undefined){
+        return res.status(400).json({status: "error", message: 'account name and value cant both be null on patch'});
+    }
+
+    if(name !== undefined){
+        const nameResult = nameValidator(name);
+        if(nameResult.error){
+            return res.status(400).json({status: "error", message: nameResult.error});
+        }
+
+        nameToSave = nameResult.name;
+    }
+
+    if(amount !== undefined){
+        const amountResult = amountValidator(amount);
+        if(amountResult.error){
+            return res.status(400).json({status: "error", message: amountResult.error});
+        }
+
+        amountToSave = amountResult.amount;
+    }
+
+    //Update name or amount if they are provided, if they are not provided...leave them as they are
+    const updateStatement = db.prepare('UPDATE accounts SET name = COALESCE(?,name), amount = COALESCE(?, amount) WHERE id = ?');
+    const returnedDBObject = updateStatement.run(nameToSave, amountToSave, accountIdResult.groupId);
+
+    res.status(200).json({});
+    console.log("Sucessfully updated account");
+});
+
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
